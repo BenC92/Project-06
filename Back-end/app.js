@@ -1,6 +1,23 @@
+//mongobd pw: Bloodmoon92
+//mzongobd connection : mongodb+srv://BenC92:<password>@cluster0.lylb1.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+
+
 const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose')
+
+const stuffRoutes = require('./routes/stuff');
 
 const app = express();
+
+mongoose.connect('mongodb+srv://BenC92:Bloodmoon92@cluster0.lylb1.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+    .then(() => {
+    console.log('Successfully connected to MongoDB Atlas!');
+  })
+  .catch((error) => {
+    console.log('Unable to connect to MongoDB Atlas!');
+    console.error(error);
+  });
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9,26 +26,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/stuff', (req, res, next) => {
-  const stuff = [
-    {
-      _id: 'oeihfzeoi',
-      title: 'My first thing',
-      description: 'All of the info about my first thing',
-      imageUrl: '',
-      price: 4900,
-      userId: 'qsomihvqios',
-    },
-    {
-      _id: 'oeihfzeomoihi',
-      title: 'My second thing',
-      description: 'All of the info about my second thing',
-      imageUrl: '',
-      price: 2900,
-      userId: 'qsomihvqios',
-    },
-  ];
-  res.status(200).json(stuff);
-});
+app.use(bodyParser.json());
+
+app.use('/api/stuff', stuffRoutes);
 
 module.exports = app;
