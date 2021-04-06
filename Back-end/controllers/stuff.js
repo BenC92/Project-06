@@ -1,4 +1,4 @@
-const Thing = require('../models/thing');
+const Thing = require('../models/things');
 
 exports.createThing = (req, res, next) => {
   const thing = new Thing({
@@ -91,7 +91,7 @@ exports.getAllStuff = (req, res, next) => {
       });
     }
   );
-};const Thing = require('../models/thing');
+};
 
 exports.createThing = (req, res, next) => {
   const thing = new Thing({

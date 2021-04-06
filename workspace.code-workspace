@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "front-end\\Web-Developer-P6-master"
+		},
+		{
+			"path": "Back-end"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Web-Developer-P6-master"
+	}
+}
