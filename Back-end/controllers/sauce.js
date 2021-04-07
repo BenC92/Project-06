@@ -104,7 +104,7 @@ exports.deleteSauce = (req, res, next) => {
   );
 };
 
-exports.getAllSauces = (req, res, next) => {
+exports.getAllSauce = (req, res, next) => {
   sauce.find().then(
     (sauce) => {
       res.status(200).json(sauce);
@@ -197,7 +197,7 @@ sauce.deleteOne({_id: req.params.id}).then(
   );
 };
 
-exports.getAllSauces = (req, res, next) => {
+exports.getAllSauce = (req, res, next) => {
   sauce.find().then(
     (sauce) => {
       res.status(200).json(sauce);
