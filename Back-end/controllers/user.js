@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const User = require('../models/user');
 
+
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10).then(
       (hash) => {
@@ -47,7 +48,7 @@ exports.signup = (req, res, next) => {
               { expiresIn: '24h' });
             res.status(200).json({
               userId: user._id,
-              token: 'token'
+              token: token
             });
           }
         ).catch(
