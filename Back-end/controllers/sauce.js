@@ -2,31 +2,34 @@ const sauce = require('../models/sauce');
 const fs =require('fs');
 
 exports.createSauce = (req, res, next) => {
-  const sourceData = JSON.parse(req.body.sauce);
+  //const sourceData = JSON.parse(req.body.sauce);
   const url = req.protocol + '://' + req.get('host');
-  console.log(sourceData)
-   const sauce = new sauce({
-    name: sauceData.name,
-    manufacturer: sauceData.manufacturer,
-     description: sauceData.description,
-     mainPepper: sauceData.mainPepper,
-     imageUrl: url + '/images/' + req.file.filename,
-     price: sauceData.price,
-     userId: sauceData.userId
-   });
-   sauce.save().then(
-     () => {
-       res.status(201).json({
-         message: 'Post saved successfully!'
-     });
-       }
-   ).catch(
-     (error) => {
-       res.status(400).json({
-         error: error
-       });
-     }
-   );
+  //  const sauce = new sauce({
+  //   name: sourceData.name,
+  //   manufacturer: sourceData.manufacturer,
+  //    description: sourceData.description,
+  //    mainPepper: sourceData.mainPepper,
+  //    imageUrl: url + '/images/' + req.file.filename,
+  //    price: sourceData.price,
+  //    userId: sourceData.userId,
+  //    likes: sourceData.likes,
+  //    dislikes: sourceData.dislike,
+  //    usersLiked: sourceData.usersLiked,
+  //    userDislike: sourceData.userDislike
+  //  });
+  //  sauce.save().then(
+  //    () => {
+  //      res.status(201).json({
+  //        message: 'Post saved successfully!'
+  //    });
+  //      }
+  //  ).catch(
+  //    (error) => {
+  //      res.status(400).json({
+  //        error: error
+  //      });
+  //    }
+  //  );
  };
 
 
@@ -83,6 +86,7 @@ exports.modifySauce = (req, res, next) => {
     }
   );
 };
+
 
 exports.deleteSauce = (req, res, next) => {
   sauce.findOne({_id: req.params.id}).then(
