@@ -23,7 +23,7 @@ mongoose.connect('mongodb+srv://BenC92:Bloodmoon92@cluster0.lylb1.mongodb.net/my
     console.error(error);
   });
 
-const allowedOrigin = ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500', 'http://127.0.0.1:5500']
+const allowedOrigin = ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5501', 'http://127.0.0.1:5501']
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true)

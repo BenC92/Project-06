@@ -1,40 +1,39 @@
-const sauce = require('../models/sauce');
+const Sauce = require('../models/sauce');
 const fs =require('fs');
 
 exports.createSauce = (req, res, next) => {
-  //const sourceData = JSON.parse(req.body.sauce);
+  const sourceData = JSON.parse(req.body.sauce);
+  console.log(sourceData)
   const url = req.protocol + '://' + req.get('host');
-  //  const sauce = new sauce({
-  //   name: sourceData.name,
-  //   manufacturer: sourceData.manufacturer,
-  //    description: sourceData.description,
-  //    mainPepper: sourceData.mainPepper,
-  //    imageUrl: url + '/images/' + req.file.filename,
-  //    price: sourceData.price,
-  //    userId: sourceData.userId,
-  //    likes: sourceData.likes,
-  //    dislikes: sourceData.dislike,
-  //    usersLiked: sourceData.usersLiked,
-  //    userDislike: sourceData.userDislike
-  //  });
-  //  sauce.save().then(
-  //    () => {
-  //      res.status(201).json({
-  //        message: 'Post saved successfully!'
-  //    });
-  //      }
-  //  ).catch(
-  //    (error) => {
-  //      res.status(400).json({
-  //        error: error
-  //      });
-  //    }
-  //  );
+    const sauce = new Sauce({
+     name: sourceData.name,
+     manufacturer: sourceData.manufacturer,
+      description: sourceData.description,
+      mainPepper: sourceData.mainPepper,
+      imageUrl: url + '/images/' + req.file.filename,
+      userId: sourceData.userId,
+      heat: sourceData.heat,
+      usersLiked: [],
+      usersDislike: []
+    });
+    sauce.save().then(
+      () => {
+        res.status(201).json({
+          message: 'Post saved successfully!'
+      });
+        }
+    ).catch(
+      (error) => {
+        res.status(400).json({
+          error: error
+        });
+      }
+    );
  };
 
 
 exports.getOneSauce = (req, res, next) => {
-  sauce.findOne({
+  Sauce.findOne({
     _id: req.params.id
   }).then(
     (sauce) => {
@@ -49,33 +48,21 @@ exports.getOneSauce = (req, res, next) => {
   );
 };
 
-exports.modifySauce = (req, res, next) => {
-  let sauce = new sauce({ _id: req.params._id });
-  if (req.file) {
-    const url = req.protocol + '://' + req.get('host');
-    req.body.sauce = JSON.parse(req.body.sauce);
-    sauce = {
-      _id: req.params.id,
-      title: req.body.sauce.title,
-      description: req.body.sauce.description,
-      imageUrl: url + '/images/' + req.file.filename,
-      price: req.body.sauce.price,
-      userId: req.body.sauce.userId
-    };
-  } else {
-    sauce = {
-      _id: req.params.id,
-      title: req.body.title,
-      description: req.body.description,
-      imageUrl: req.body.imageUrl,
-      price: req.body.price,
-      userId: req.body.userId
-    };
-  }
-  sauce.updateOne({_id: req.params.id}, sauce).then(
+exports.modifySauce = (req, res, next) =>{
+  console.log(req.body)
+  console.log(req.file)
+	const sauceData = JSON.parse(req.body.sauce)
+
+	
+	if (req.file) {
+		sauceData.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename;
+	} 
+	
+	
+	Sauce.updateOne({_id: req.params.id}, sauceData).then(
     () => {
       res.status(201).json({
-        message: 'sauce updated successfully!'
+        message: 'Sauce updated successfully!'
       });
     }
   ).catch(
@@ -84,12 +71,12 @@ exports.modifySauce = (req, res, next) => {
         error: error
       });
     }
-  );
+   );
 };
 
 
 exports.deleteSauce = (req, res, next) => {
-  sauce.findOne({_id: req.params.id}).then(
+  Sauce.findOne({_id: req.params.id}).then(
     (sauce) => {
       const filename = sauce.imageUrl.split('/images/')[1];
       fs.unlink('images/' + filename, () => {
@@ -112,7 +99,7 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 exports.getAllSauce = (req, res, next) => {
-  sauce.find().then(
+  Sauce.find().then(
     (sauce) => {
       res.status(200).json(sauce);
     }
@@ -124,3 +111,86 @@ exports.getAllSauce = (req, res, next) => {
     }
   );
 };
+
+
+
+exports.likeSauce = (req, res, next) =>{
+  console.log(req.body)
+
+  const userId = req.body.userId
+  const like = req.body.like
+  const id = req.params.id
+  Sauce.findOne({ _id: id})
+    .then(sauce =>{
+      const sauceData = {
+        _id: id
+      }
+      const usersLiked = sauce.usersLiked.includes(userId)
+      const usersDisliked = sauce.usersDisliked.includes(userId)
+
+      if (like >0 && !usersLiked){
+        sauceData.$inc = {
+          likes: 1
+        }
+        sauceData.$push = { usersLiked : userId}
+      } else if (less<0 && !usersDisliked){
+        sauceData.$inc = {
+          dislike: -1
+        }
+        sauceData.$pull= {usersDisliked : userId}
+      } 
+
+      sauce.updateOne({_id: id}, sauceData)
+    }).then(
+          (sauce) => {
+            res.status(200).json(sauce);
+          }
+        ).catch(
+          (error) => {
+            res.status(404).json({
+              error: error
+            });
+          }
+        );
+    };
+
+    exports.dislikeSauce = (req, res, next) =>{
+      console.log(req.body)
+    
+      const userId = req.body.userId
+      const dislike = req.body.dislike
+      const id = req.params.id
+      Sauce.findOne({ _id: id})
+        .then(sauce =>{
+          const sauceData = {
+            _id: id
+          } 
+          const usersDisliked = sauce.usersDisliked.includes(userId)
+          const usersLiked = sauce.usersLiked.includes(userId)
+         
+    
+          if (dislike >0 && !usersDisliked){
+            sauceData.$inc = {
+              dislikes: 1
+            }
+            sauceData.$push = { usersDisliked : userId}
+          } else if (less<0 && !usersLiked){
+            sauceData.$inc = {
+              like: -1
+            }
+            sauceData.$pull= {usersLiked : userId}
+          } 
+    
+          sauce.updateOne({_id: id}, sauceData)
+        }).then(
+              (sauce) => {
+                res.status(200).json(sauce);
+              }
+            ).catch(
+              (error) => {
+                res.status(404).json({
+                  error: error
+                });
+              }
+            );
+        };
