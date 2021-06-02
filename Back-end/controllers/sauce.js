@@ -126,6 +126,7 @@ exports.likeSauce = (req, res, next) => {
   const userId = req.body.userId
   const like = req.body.like
   const id = req.params.id
+
   Sauce.findOne({
       _id: id
     })
@@ -133,19 +134,19 @@ exports.likeSauce = (req, res, next) => {
       const sauceData = {
         _id: id
       }
-      const usersLiked = sauce.usersLiked.includes(userId)
+      
       const usersDisliked = sauce.usersDisliked.includes(userId)
 
-      if (like > 0 && !usersLiked) {
+      if (like > 0) {
         sauceData.$inc = {
           likes: 1
         }
         sauceData.$push = {
           usersLiked: userId
         }
-      } else if (like < 0 && !usersDisliked) {
+      } else if (like === -1 ) {
         sauceData.$inc = {
-          dislike: -1
+          dislikes: 1
         }
         sauceData.$push = {
           usersDisliked: userId
@@ -160,7 +161,7 @@ exports.likeSauce = (req, res, next) => {
           }
         } else {
           sauceData.$inc = {
-            likes: 1
+            likes: -1
           }
           sauceData.$pull = {
             usersLiked: userId
@@ -170,7 +171,7 @@ exports.likeSauce = (req, res, next) => {
 
       console.log(sauceData)
 
-      sauce.updateOne({
+      Sauce.updateOne({
           _id: id
         }, sauceData)
         .then(
