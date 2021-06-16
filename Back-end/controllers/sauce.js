@@ -31,7 +31,6 @@ exports.createSauce = (req, res, next) => {
   );
 };
 
-
 exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({
     _id: req.params.id
@@ -49,15 +48,12 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-  console.log(req.body)
-  console.log(req.file)
-  const sauceData = JSON.parse(req.body.sauce)
-
+  console.log('body', req.body)
+  const sauceData = req.body
 
   if (req.file) {
     sauceData.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + req.file.filename;
   }
-
 
   Sauce.updateOne({
     _id: req.params.id
@@ -75,7 +71,6 @@ exports.modifySauce = (req, res, next) => {
     }
   );
 };
-
 
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({
@@ -119,7 +114,6 @@ exports.getAllSauce = (req, res, next) => {
 };
 
 
-
 exports.likeSauce = (req, res, next) => {
   console.log(req.body)
 
@@ -134,7 +128,7 @@ exports.likeSauce = (req, res, next) => {
       const sauceData = {
         _id: id
       }
-      
+
       const usersDisliked = sauce.usersDisliked.includes(userId)
 
       if (like > 0) {
@@ -144,7 +138,7 @@ exports.likeSauce = (req, res, next) => {
         sauceData.$push = {
           usersLiked: userId
         }
-      } else if (like === -1 ) {
+      } else if (like === -1) {
         sauceData.$inc = {
           dislikes: 1
         }
